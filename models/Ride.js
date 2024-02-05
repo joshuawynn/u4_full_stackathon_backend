@@ -20,6 +20,7 @@ const ReviewSchema = new Schema({
 const RideSchema = new Schema ({
     title: String,
     waitTime: String,
+    picture: String,
     rideSpeed: String,
     rideHeight: String,
     description: String,
