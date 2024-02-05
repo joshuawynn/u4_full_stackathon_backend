@@ -1,17 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const RideSchema = new Schema ({
-    title: String,
-    id: mongoose.Types.ObjectId,
-    wait_time: Number,
-    ride_speed: Number,
-    ride_height: Number,
-    description: String,
-    ride_duration: Number,
-    reviews: [ReviewSchema]
-}, {timestamps: true})
-
 const ReviewSchema = new Schema({
     content: {
         type: String,
@@ -24,8 +13,19 @@ const ReviewSchema = new Schema({
         default: 5
     }
 }, {
-    timeStamps: true
+    timestamps: true
 });
+
+
+const RideSchema = new Schema ({
+    title: String,
+    wait_time: Number,
+    ride_speed: Number,
+    ride_height: Number,
+    description: String,
+    ride_duration: Number,
+    reviews: [ReviewSchema]
+}, {timestamps: true})
 
 
 module.exports = mongoose.model('Ride', RideSchema)
