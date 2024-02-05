@@ -3,72 +3,44 @@
 ////////////////////////////////
 
 const express = require('express')
-const {Reviews} = require('../models')
+const {Ride} = require('../models/Ride')
 // we can use 'object de-structuring' to access just the model we need for this controller
 
-// Reviews INDEX ACTION
-async function index(req,res,next) {
-	try {
-    // get all Reviews
-    res.json(await Reviews.find({}));
-  } catch (error) {
-    //send error
-    res.status(400).json(error);
-  }
-};
 
 // Reviews CREATE ACTION
-async function create(req,res,next) {
-  try {
-    // create new person
-    res.json(await Reviews.create(req.body));
-  } catch (error) {
-    //send error
-    res.status(400).json(error);
-  }
-};
 
-// Reviews SHOW ACTION
-async function show(req,res,next) {
+async function create(req,res) {
+    const ride = await Ride.findById(req.params.id)
+
+    ride.reviews.push(req.body)
     try {
-        // send one person
-        res.json(await Reviews.findById(req.params.id));
-      } catch (error) {
-        //send error
-        res.status(400).json(error);
+        // Save any changes made to the movie doc
+        await ride.save();
+      } catch (err) {
+        console.log(err);
       }
-};
-
-
-// Reviews DESTROY ACTION
-async function destroy(req,res,next) {
-    try {
-      // delete Reviews by ID
-      res.json(await Reviews.findByIdAndDelete(req.params.id));
-    } catch (error) {
-      //send error
-      res.status(400).json(error);
+      // Step 5:  Respond to the Request (redirect if data has been changed)
+      res.redirect(`/rides/${ride._id}`);
     }
-  };
-  
-  // Reviews UPDATE ACTION
-  async function update(req,res,next) {
-    try {
-      // update Reviews by ID, provide the form data, and return the updated document.
-      res.json(
-        await Reviews.findByIdAndUpdate(req.params.id, req.body, {new:true})
-      );
-    } catch (error) {
-      //send error
-      res.status(400).json(error);
-    }
-  };
 
-// EXPORT Controller Action
-module.exports = {
-	index,
-	create,
-	show,
-    delete: destroy,
-    update
-}
+
+
+    async function deleteReview(req, res) {
+        // Note the cool "dot" syntax to query on the property of a subdoc
+        Ride.findOne({
+          'reviews._id': req.params.id,
+        }).then(function (ride) {
+          if (!ride) return res.redirect('/rides');
+          ride.reviews.remove(req.params.id);
+          ride.save().then(function () {
+            res.redirect(`/rides/${ride._id}`);
+          }).catch(function (err) {
+            return next(err);
+          });
+        });
+      }
+
+      module.exports = {
+        create,
+        delete: deleteReview
+      };
