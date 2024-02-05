@@ -1,3 +1,3 @@
 module.exports = {
-    Rides: require('./Ride')
+    Ride: require('./Ride')
 }
