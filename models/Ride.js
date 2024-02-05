@@ -19,11 +19,11 @@ const ReviewSchema = new Schema({
 
 const RideSchema = new Schema ({
     title: String,
-    wait_time: Number,
-    ride_speed: Number,
-    ride_height: Number,
+    wait_time: String,
+    ride_speed: String,
+    ride_height: String,
     description: String,
-    ride_duration: Number,
+    ride_duration: String,
     reviews: [ReviewSchema]
 }, {timestamps: true})
 
